@@ -38,19 +38,30 @@ dati$codaz<-casefold(dati$codaz, upper=TRUE)
 dati<-dati %>% 
   group_by(specie,mese) %>% 
   summarise("morti"=sum(ncamp))
+ov<-dati %>% 
+  filter(specie=="OVINO")
+cap<-dati %>% 
+  filter(specie=="CAPRA")
 
 
 #output$dygraph <- renderDygraph({
-graph<- xts(dati$morti, order.by = as.Date(dati$mese))
-  dygraph(graph,ylab = "n.morti") %>% 
-    dyAxis("y", label = "n.morti/mese",valueRange = c(0, 100)) %>% 
-    dySeries("V1", label = "n.morti/mese") %>% 
-    dyOptions(drawPoints = TRUE, pointSize = 2) 
+ovini<- xts(ov$morti, order.by = as.Date(ov$mese))
+capre<-xts(cap$morti, order.by = as.Date(cap$mese))
 
-  p <- predict(dati, n.ahead = 72, prediction.interval = TRUE)
-  
-  dygraph(p, main = "Predicted Lung Deaths (UK)") %>%
-    dySeries(c("lwr", "fit", "upr"), label = "Deaths")
+morti<-cbind(ovini,capre)
+
+dygraph(morti,ylab = "n.morti") %>% 
+    dyAxis("y", label = "n.morti/mese",valueRange = c(0, 80)) %>% 
+  dyRoller(rollPeriod = 6)
+
+# %>% 
+#     dyOptions(drawPoints = TRUE, pointSize = 2) 
+# 
+#   
+#   
+hw <- HoltWinters(capre)
+
+
 
   
   library(dygraphs)
