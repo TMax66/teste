@@ -59,15 +59,16 @@ dygraph(morti,ylab = "n.morti") %>%
 # 
 #   
 #   
-hw <- HoltWinters(capre)
 
 
+###by codaz###
 
-  
-  library(dygraphs)
-  lungDeaths <- cbind(mdeaths, fdeaths)
-  dygraph(lungDeaths)
-  
-  
+dati<-dati %>% 
+  group_by(codaz,specie,mese) %>% 
+  summarise("morti"=sum(ncamp))
 
- 
+cap<-dati %>% 
+  filter(specie=="CAPRA") 
+
+x<-cap %>% 
+  filter(codaz=="242BG019")
